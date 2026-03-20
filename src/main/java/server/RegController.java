@@ -1,0 +1,77 @@
+package server;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import dao.DBConnect;
+
+import model.Regmodel;
+
+/**
+ * Servlet implementation class RegController
+ */
+@WebServlet("/RegController")
+public class RegController extends HttpServlet {
+ private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public RegController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+ /**
+  * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+  */
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  // TODO Auto-generated method stub
+  response.getWriter().append("Served at: ").append(request.getContextPath());
+ }
+
+ /**
+  * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+  */
+ protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  // TODO Auto-generated method stub
+  //doGet(request, response);
+  PrintWriter out = response.getWriter();
+  String name = request.getParameter("t1");
+  String email = request.getParameter("t2");
+  String pass = request.getParameter("t3");
+  String gender = request.getParameter("t4");
+  
+  out.println(gender);
+  
+  Regmodel rm = new Regmodel(name, email, pass, gender);
+  
+  try {
+  DBConnect d = new DBConnect();
+  d.QueryExecuter("insert into registration values('"+name+"','"+email+
+    "','"+pass+"',"+gender+")");
+  //out.println("user created ...");
+  
+  HttpSession session = request.getSession();
+  session.setAttribute("uname",name);
+  session.setAttribute("uemail",email);
+  
+  response.sendRedirect("Home.jsp");
+  
+  }
+  catch(Exception e)
+  {
+   out.println(e);
+  }
+  
+  
+ }
+
+}
