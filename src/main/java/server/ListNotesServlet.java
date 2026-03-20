@@ -21,8 +21,14 @@ public class ListNotesServlet extends HttpServlet {
         try {
             DBConnect d = new DBConnect();
 
-            // ✅ FIX: Remove email filter (main issue)
-            PreparedStatement ps = d.cn.prepareStatement("SELECT * FROM notes");
+            HttpSession session = request.getSession();
+String email = (String) session.getAttribute("uemail");
+
+PreparedStatement ps = d.cn.prepareStatement(
+    "SELECT * FROM notes WHERE uploadbyemail=?"
+);
+
+ps.setString(1, email);
 
             ResultSet rs = ps.executeQuery();
 
